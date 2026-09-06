@@ -16,7 +16,9 @@ jobs:
           fetch-depth: 0
       - name: Read package version
         id: version
-        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION=$(node -p 'require("./package.json").version')
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
       - name: Create tag and GitHub Release when version is new
         env:
           GH_TOKEN: ${{ github.token }}
