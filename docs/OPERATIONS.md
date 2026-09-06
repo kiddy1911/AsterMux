@@ -3,6 +3,8 @@
 This guide covers the local dashboard, launcher, macOS service integration,
 account directories, logs, and common recovery steps.
 
+For installation and the four supported run methods, start with [Running AsterMux](RUNNING.md).
+
 ## Local control surface
 
 With AsterMux running on the default address:
