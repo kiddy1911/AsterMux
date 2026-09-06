@@ -63,7 +63,7 @@ execution lifecycle.
 
 ## Requirements
 
-- Node.js 18+ when running from npm/source.
+- Node.js 18+ when running from source.
 - Cursor Agent CLI installed and authenticated, or a `CURSOR_API_KEY` for
   headless use.
 - For external client tools, a Cursor ACP build that exposes the required MCP
@@ -76,37 +76,95 @@ models are visible:
 agent --list-models
 ```
 
-## Quick start
+## Choose how to run AsterMux
 
-### Docker Compose
+AsterMux currently has four supported run paths. Docker users do **not** need a
+local Cursor Agent installation because the published image installs the Agent
+inside the container.
+
+| Method | Best for | Source checkout required? |
+|---|---|---:|
+| **GHCR Docker image** | Fastest server/VPS deployment | No |
+| **Docker Compose** | Long-running deployment with repository-managed config | Yes |
+| **From source** | Development, customization, debugging | Yes |
+| **macOS service / menu bar** | Local background operation on macOS | Yes |
+
+### 1. GHCR Docker image — fastest
+
+Create a private environment file with your own credentials:
 
 ```bash
-cp .env.example .env
-# Set CURSOR_API_KEY in .env
-
-docker compose up --build -d
-curl http://127.0.0.1:8787/healthz
+cat > .env <<'EOF'
+CURSOR_API_KEY=replace-with-your-cursor-key
+ASTERMUX_API_KEY=replace-with-your-own-gateway-key
+EOF
+chmod 600 .env
 ```
 
-Compose binds to loopback by default. Change `ASTERMUX_BIND_ADDR` only when you
-intend to expose the service beyond the host.
-
-### From source
+Then start AsterMux:
 
 ```bash
-npm install
+docker run -d \
+  --name astermux \
+  --restart unless-stopped \
+  --env-file .env \
+  -p 127.0.0.1:8787:8787 \
+  ghcr.io/kiddy1911/astermux:latest
+```
+
+For production, pin a release tag such as
+`ghcr.io/kiddy1911/astermux:v0.1.1` instead of `latest`.
+
+### 2. Docker Compose — recommended for repository deployments
+
+```bash
+git clone https://github.com/kiddy1911/AsterMux.git
+cd AsterMux
+cp .env.example .env
+# Edit .env and set CURSOR_API_KEY. Set ASTERMUX_API_KEY before remote exposure.
+
+docker compose up --build -d
+```
+
+Compose binds to `127.0.0.1:8787` by default. Change `ASTERMUX_BIND_ADDR` only
+when remote access is intentional.
+
+### 3. From source
+
+Install and authenticate the Cursor Agent first, then:
+
+```bash
+git clone https://github.com/kiddy1911/AsterMux.git
+cd AsterMux
+npm ci
 npm run build
+
+export CURSOR_API_KEY='replace-with-your-cursor-key'   # optional if Agent is already authenticated
+export ASTERMUX_API_KEY='replace-with-your-own-gateway-key'
 npm start
 ```
 
-Or install/use the CLI package:
+### 4. macOS background service
+
+After building from source, install the launcher and enable the user LaunchAgent:
 
 ```bash
-npm install astermux
-npx astermux
+chmod +x scripts/astermux
+mkdir -p ~/.local/bin
+ln -sf "$(pwd)/scripts/astermux" ~/.local/bin/astermux
+export ASTERMUX_ROOT="$(pwd)"
+
+astermux enable
+astermux health
 ```
 
-Default endpoint: `http://127.0.0.1:8787`.
+For macOS service mode, authenticate the local Cursor Agent before enabling the
+service. The optional menu-bar controller lives in `apps/macos-menu/`.
+
+All methods use the same default endpoint: `http://127.0.0.1:8787`.
+
+For start/stop, logs, upgrades, remote binding, and troubleshooting, see
+[Running AsterMux](docs/RUNNING.md) and [Operations](docs/OPERATIONS.md).
 
 ## First request
 
