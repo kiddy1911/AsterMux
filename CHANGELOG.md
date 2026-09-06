@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2
+
+- Added professional project metadata, README status badges, support/community documentation, and MIT package metadata.
+- Added CodeQL scanning, Dependabot, CODEOWNERS, pull-request guidance, EditorConfig, and Git attributes.
+- Consolidated release automation so releases publish only after a successful main-branch CI run, with GHCR provenance/SBOM metadata.
+- Raised the source/runtime support baseline to Node.js 22.12+ and validate Node 22/24 in CI.
+
 ## 0.1.1
 
 - Changed the default AsterMux HTTP port from `8765` to `8787` across runtime, Docker, SDK, examples, and documentation.

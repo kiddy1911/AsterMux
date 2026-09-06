@@ -1,6 +1,6 @@
 {
   "name": "astermux",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Adaptive model gateway for Cursor ACP with OpenAI/Anthropic compatibility, universal model pooling, tools, batching, and elastic memory.",
   "private": false,
   "type": "module",
@@ -37,7 +37,7 @@
     "prepublishOnly": "npm run build && npm test"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.12.0"
   },
   "keywords": [
     "astermux",
@@ -51,7 +51,7 @@
     "tool-calling",
     "batch"
   ],
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0",
@@ -60,5 +60,17 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
     "chrome-launcher": "^1.2.1"
+  },
+  "author": "AsterMux contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiddy1911/AsterMux.git"
+  },
+  "homepage": "https://github.com/kiddy1911/AsterMux#readme",
+  "bugs": {
+    "url": "https://github.com/kiddy1911/AsterMux/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,8 +1,9 @@
 # Contributing to AsterMux
 
-Thanks for contributing. AsterMux is an execution gateway, so changes to model
-selection, tool lifecycles, scheduling, and process management should preserve
-bounded resource usage and protocol compatibility.
+Thanks for contributing. Participation in this project is governed by our
+[Code of Conduct](CODE_OF_CONDUCT.md). AsterMux is an execution gateway, so
+changes to model selection, tool lifecycles, scheduling, and process management
+should preserve bounded resource usage and protocol compatibility.
 
 ## Development
 
@@ -41,4 +42,4 @@ Never commit or paste:
 - private request bodies or workspace contents.
 
 Use `.env.example` for configuration documentation. Report security issues using
-GitHub private security advisories once the public repository is available.
+the private process in [SECURITY.md](SECURITY.md).

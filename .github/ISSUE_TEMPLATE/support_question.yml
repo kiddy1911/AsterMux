@@ -1,0 +1,39 @@
+name: Support question
+description: Ask about installation, configuration, deployment, or expected behavior
+title: "[support] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check docs/RUNNING.md and docs/CONFIGURATION.md first. Never paste `.env`, API keys, auth tokens, or private workspace data.
+  - type: input
+    id: version
+    attributes:
+      label: AsterMux version
+      placeholder: v0.1.2 or commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: run_method
+    attributes:
+      label: Run method
+      options:
+        - GHCR Docker image
+        - Docker Compose
+        - From source
+        - macOS service / menu bar
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Describe what you are trying to accomplish and what happened.
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      description: Include sanitized commands, HTTP status codes, or logs where useful.

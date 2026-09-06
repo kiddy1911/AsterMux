@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Running and deployment guide
+    url: https://github.com/kiddy1911/AsterMux/blob/main/docs/RUNNING.md
+    about: Check installation, Docker, Compose, source, macOS service, and upgrade instructions.
+  - name: Report a security vulnerability privately
+    url: https://github.com/kiddy1911/AsterMux/security/advisories/new
+    about: Do not post vulnerabilities, credentials, or private data in a public issue.

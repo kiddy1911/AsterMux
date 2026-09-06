@@ -1,0 +1,8 @@
+# Default maintainer review ownership.
+* @kiddy1911
+
+# Extra attention for release/security-sensitive automation.
+/.github/workflows/ @kiddy1911
+/SECURITY.md @kiddy1911
+/Dockerfile @kiddy1911
+/compose.yaml @kiddy1911
