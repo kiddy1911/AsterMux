@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible AsterMux problem
+title: "[bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste API keys, authentication tokens, `.env` contents, or private workspace data.
+  - type: input
+    id: version
+    attributes:
+      label: AsterMux version
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: input
+    id: cursor
+    attributes:
+      label: Cursor Agent version
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs
+      description: Remove credentials, request secrets, and private paths before posting.

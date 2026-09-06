@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Docs — AsterMux</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="dot" id="status-dot"></span>
+      <span>AsterMux</span>
+      <span class="muted-text" style="font-weight: 400; font-size: 12px;">Docs</span>
+    </div>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/docs" class="active">Docs</a>
+      <a href="/api/docs" target="_blank">View source</a>
+    </nav>
+  </header>
+
+  <div class="wiki-layout">
+    <aside class="wiki-toc" id="toc"></aside>
+    <article class="wiki-body" id="docs"></article>
+  </div>
+
+  <script src="/static/vendor/marked.min.js"></script>
+  <script src="/static/docs.js"></script>
+</body>
+</html>

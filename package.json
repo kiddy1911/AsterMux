@@ -1,0 +1,65 @@
+{
+  "name": "astermux",
+  "version": "0.1.0",
+  "description": "Adaptive model gateway for Cursor ACP with OpenAI/Anthropic compatibility, universal model pooling, tools, batching, and elastic memory.",
+  "private": false,
+  "type": "module",
+  "files": [
+    "dist",
+    "!dist/**/*.test.*",
+    "ui",
+    "docs",
+    "scripts/astermux",
+    "package.json",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "SECURITY.md"
+  ],
+  "main": "./dist/sdk/client.js",
+  "types": "./dist/sdk/client.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/sdk/client.d.ts",
+      "import": "./dist/sdk/client.js",
+      "default": "./dist/sdk/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "astermux": "dist/entry/cli.js"
+  },
+  "scripts": {
+    "prepare": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
+    "start": "node ./dist/entry/cli.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "astermux",
+    "cursor",
+    "acp",
+    "mcp",
+    "openai",
+    "anthropic",
+    "llm",
+    "gateway",
+    "tool-calling",
+    "batch"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "chrome-launcher": "^1.2.1"
+  }
+}

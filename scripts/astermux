@@ -1,0 +1,366 @@
+#!/usr/bin/env bash
+# astermux — launcher (install to ~/.local/bin/astermux).
+# Requires: Node 18+, built dist/entry/cli.js under ASTERMUX_ROOT.
+
+set -euo pipefail
+
+LABEL="io.astermux.gateway"
+PLIST="${HOME}/Library/LaunchAgents/${LABEL}.plist"
+STORAGE="${HOME}/.astermux"
+LOG="${STORAGE}/gateway.log"
+PIDFILE="${STORAGE}/gateway.pid"
+
+PORT="${ASTERMUX_PORT:-8765}"
+HOST="${ASTERMUX_HOST:-127.0.0.1}"
+
+_resolve_root() {
+  if [[ -n "${ASTERMUX_ROOT:-}" ]]; then
+    echo "${ASTERMUX_ROOT}"
+    return
+  fi
+  # Follow symlinks (e.g. ~/.local/bin/astermux -> .../scripts/...)
+  # so we can locate the repo's scripts/ dir even when invoked via the symlink.
+  local self="${BASH_SOURCE[0]:-$0}"
+  while [[ -L "$self" ]]; do
+    local link
+    link="$(readlink "$self")"
+    if [[ "$link" = /* ]]; then
+      self="$link"
+    else
+      self="$(cd "$(dirname "$self")" && pwd -P)/$link"
+    fi
+  done
+  local dir
+  dir="$(cd "$(dirname "$self")" && pwd -P)"
+  if [[ "$(basename "$dir")" == "scripts" ]]; then
+    echo "$(cd "$dir/.." && pwd -P)"
+    return
+  fi
+  echo ""
+}
+
+ROOT="$(_resolve_root)"
+
+# Lazy node lookup: only commands that actually need node (start/run/enable)
+# call _entry. Doing this at top-level used to kill the script under
+# `set -euo pipefail` when launchd's minimal PATH had no `node`, even for
+# `stop`/`health` which don't need node at all.
+#
+# Returns "<node>|<cli.js>" on stdout, or non-zero exit + stderr message.
+# Callers MUST guard with `if ! out=$(_entry); then exit 1; fi` — using
+# `IFS=| read … <<<"$(_entry)"` masks the failure (issue: empty $node + $exe
+# leading to `nohup: : No such file or directory`).
+_entry() {
+  if [[ -z "$ROOT" ]]; then
+    echo "Set ASTERMUX_ROOT to your astermux checkout (directory containing dist/entry/cli.js)." >&2
+    return 1
+  fi
+  local cli="${ROOT}/dist/entry/cli.js"
+  if [[ ! -f "$cli" ]]; then
+    echo "Missing ${cli} — run: cd \"$ROOT\" && npm install && npm run build" >&2
+    return 1
+  fi
+  local node_bin="${ASTERMUX_NODE:-}"
+  if [[ -z "$node_bin" ]]; then
+    node_bin="$(command -v node 2>/dev/null || true)"
+  fi
+  if [[ -z "$node_bin" || ! -x "$node_bin" ]]; then
+    # launchd/widget can run with a minimal PATH; probe common install locations.
+    local candidates=(
+      "${HOME}/.local/bin/node"
+      "/opt/homebrew/bin/node"
+      "/usr/local/bin/node"
+      "${HOME}/.volta/bin/node"
+      "${HOME}/.asdf/shims/node"
+    )
+    local nvm_root="${HOME}/.nvm/versions/node"
+    if [[ -d "$nvm_root" ]]; then
+      local nvm_ver
+      for nvm_ver in "$nvm_root"/*; do
+        [[ -d "$nvm_ver" ]] || continue
+        candidates+=("${nvm_ver}/bin/node")
+      done
+    fi
+    local candidate
+    for candidate in "${candidates[@]}"; do
+      if [[ -x "$candidate" ]]; then
+        node_bin="$candidate"
+        break
+      fi
+    done
+  fi
+  if [[ -z "$node_bin" || ! -x "$node_bin" ]]; then
+    echo "node not found. Install Node 18+ or set ASTERMUX_NODE." >&2
+    return 1
+  fi
+  echo "$node_bin|$cli"
+}
+
+# Tiny helper: resolve _entry and split into $node / $exe in the caller's scope,
+# but propagate the failure (unlike `<<<"$(_entry)"`).
+_load_entry() {
+  local entry
+  if ! entry="$(_entry)"; then
+    return 1
+  fi
+  IFS='|' read -r node exe <<<"$entry"
+  if [[ -z "${node:-}" || -z "${exe:-}" ]]; then
+    echo "Internal error: empty node/cli from _entry" >&2
+    return 1
+  fi
+}
+
+_http_ok() {
+  local scheme="http"
+  if curl -kfsS --max-time 2 "${scheme}://${HOST}:${PORT}/healthz" 2>/dev/null | grep -qx ok; then
+    return 0
+  fi
+  return 1
+}
+
+_read_pid() {
+  if [[ -f "$PIDFILE" ]]; then
+    tr -d ' \n' <"$PIDFILE" || true
+  fi
+}
+
+_pid_alive() {
+  local p="${1:-}"
+  [[ -n "$p" ]] && kill -0 "$p" 2>/dev/null
+}
+
+_health_text() {
+  echo "astermux launcher"
+  echo "  ROOT: ${ROOT:-"(unset — set ASTERMUX_ROOT)"}"
+  echo "  URL:  http://${HOST}:${PORT}/"
+  echo "  log:  $LOG"
+  echo "  pid:  $PIDFILE"
+  local lp=false
+  if [[ "$(uname -s)" == "Darwin" ]] && launchctl list 2>/dev/null | grep -q "$LABEL"; then
+    lp=true
+  fi
+  echo "  launchd: $([[ "$lp" == true ]] && echo loaded || echo not loaded)"
+  local pid="$(_read_pid)"
+  if _pid_alive "$pid"; then
+    echo "  process: RUNNING (pid $pid)"
+  else
+    echo "  process: not running (stale pid file ignored if any)"
+  fi
+  if _http_ok; then
+    echo "  /healthz: ok"
+  else
+    echo "  /healthz: no response"
+  fi
+  if [[ -f "$LOG" ]]; then
+    echo "  last log lines:"
+    tail -n 5 "$LOG" 2>/dev/null | sed 's/^/    /' || true
+  fi
+}
+
+cmd_start() {
+  local node exe
+  _load_entry || exit 1
+  mkdir -p "$STORAGE"
+  if _http_ok; then
+    echo "Already responding on http://${HOST}:${PORT}/healthz"
+    exit 0
+  fi
+  local old="$(_read_pid)"
+  if _pid_alive "$old"; then
+    echo "PID $old still alive but /healthz failed — try: $0 restart" >&2
+    exit 1
+  fi
+  echo "Starting (background) → $LOG"
+  nohup "$node" "$exe" >>"$LOG" 2>&1 &
+  local npid=$!
+  echo "$npid" >"$PIDFILE" || true
+  for _ in $(seq 1 20); do
+    if _http_ok; then
+      echo "OK — http://${HOST}:${PORT}/"
+      exit 0
+    fi
+    sleep 0.15
+  done
+  echo "Started, but no /healthz on port $PORT (see tail of $LOG)" >&2
+  exit 1
+}
+
+_stop_internal() {
+  local pid="$(_read_pid)"
+  if [[ "$(uname -s)" == "Darwin" ]] && launchctl list 2>/dev/null | grep -q "$LABEL"; then
+    echo "Note: launchd has $LABEL loaded — process may respawn. Run: $0 disable" >&2
+  fi
+  if ! _pid_alive "$pid"; then
+    echo "Not running."
+    rm -f "$PIDFILE" 2>/dev/null || true
+    return 0
+  fi
+  kill -TERM "$pid" 2>/dev/null || true
+  for _ in $(seq 1 25); do
+    if ! _pid_alive "$pid"; then
+      echo "Stopped (pid $pid)"
+      rm -f "$PIDFILE" 2>/dev/null || true
+      return 0
+    fi
+    sleep 0.2
+  done
+  kill -KILL "$pid" 2>/dev/null || true
+  rm -f "$PIDFILE" 2>/dev/null || true
+  echo "Force-stopped pid $pid"
+  return 0
+}
+
+cmd_stop() {
+  _stop_internal
+}
+
+cmd_restart() {
+  _stop_internal || true
+  sleep 1
+  cmd_start
+}
+
+cmd_rebuild() {
+  if [[ -z "$ROOT" ]]; then
+    echo "Set ASTERMUX_ROOT to your astermux checkout (directory containing dist/entry/cli.js)." >&2
+    exit 1
+  fi
+  if ! command -v npm >/dev/null 2>&1; then
+    echo "npm not found in PATH. Install Node/npm or run with a shell that has npm." >&2
+    exit 1
+  fi
+  echo "Rebuilding in $ROOT"
+  (
+    cd "$ROOT"
+    npm run build
+  )
+}
+
+cmd_folder() {
+  if [[ -z "$ROOT" ]]; then
+    echo "Set ASTERMUX_ROOT to your astermux checkout." >&2
+    exit 1
+  fi
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    open "$ROOT"
+    echo "Opened: $ROOT"
+    return 0
+  fi
+  if command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "$ROOT" >/dev/null 2>&1 || true
+    echo "Opened: $ROOT"
+    return 0
+  fi
+  echo "$ROOT"
+}
+
+cmd_enable() {
+  local node exe
+  _load_entry || exit 1
+  [[ "$(uname -s)" == "Darwin" ]] || { echo "launchd is macOS-only." >&2; exit 1; }
+  mkdir -p "$(dirname "$PLIST")"
+  local launcher
+  launcher="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+  local agent_bin=""
+  if command -v cursor-agent >/dev/null 2>&1; then
+    agent_bin="$(command -v cursor-agent)"
+  elif [[ -x "${HOME}/.local/bin/cursor-agent" ]]; then
+    agent_bin="${HOME}/.local/bin/cursor-agent"
+  fi
+  cat >"$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>${LABEL}</string>
+  <key>WorkingDirectory</key><string>${ROOT}</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key><string>${HOME}/.local/bin:/opt/homebrew/bin:/usr/local/bin:${HOME}/.asdf/shims:/usr/bin:/bin</string>
+    <key>ASTERMUX_ROOT</key><string>${ROOT}</string>
+    <key>ASTERMUX_PORT</key><string>${PORT}</string>
+    <key>ASTERMUX_HOST</key><string>${HOST}</string>${agent_bin:+
+    <key>CURSOR_AGENT_BIN</key><string>${agent_bin}</string>}
+  </dict>
+  <key>ProgramArguments</key>
+  <array>
+    <string>${launcher}</string>
+    <string>run</string>
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>${LOG}</string>
+  <key>StandardErrorPath</key><string>${LOG}</string>
+  </dict>
+</plist>
+EOF
+  launchctl bootout "gui/$(id -u)" "$PLIST" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$PLIST"
+  echo "Loaded $PLIST"
+}
+
+cmd_disable() {
+  [[ "$(uname -s)" == "Darwin" ]] || { echo "launchd is macOS-only." >&2; exit 1; }
+  launchctl bootout "gui/$(id -u)" "$PLIST" 2>/dev/null || true
+  rm -f "$PLIST"
+  echo "Unloaded and removed plist (if it existed)."
+}
+
+cmd_run() {
+  local node exe
+  _load_entry || exit 1
+  mkdir -p "$STORAGE"
+  exec "$node" "$exe"
+}
+
+cmd_health() {
+  _health_text
+}
+
+cmd_requests() {
+  local node exe
+  _load_entry || exit 1
+  exec "$node" "$exe" requests "$@"
+}
+
+cmd_menu() {
+  while true; do
+    echo
+    _health_text
+    echo
+    echo "  1) start   2) stop   3) restart   4) health   5) enable   6) disable   7) rebuild   8) folder   q) quit"
+    read -r -p "> " choice || exit 0
+    case "$choice" in
+      1) cmd_start ;;
+      2) cmd_stop ;;
+      3) cmd_restart ;;
+      4) cmd_health ;;
+      5) cmd_enable ;;
+      6) cmd_disable ;;
+      7) cmd_rebuild ;;
+      8) cmd_folder ;;
+      q|Q) exit 0 ;;
+      *) echo "Unknown option" ;;
+    esac
+  done
+}
+
+main() {
+  local sub="${1:-}"
+  case "$sub" in
+    start) cmd_start ;;
+    stop) cmd_stop ;;
+    restart) cmd_restart ;;
+    health) cmd_health ;;
+    enable) cmd_enable ;;
+    disable) cmd_disable ;;
+    rebuild) cmd_rebuild ;;
+    folder) cmd_folder ;;
+    run) cmd_run ;;
+    requests) shift; cmd_requests "$@" ;;
+    "" ) cmd_health; echo; cmd_menu ;;
+    *) echo "Usage: $0 {start|stop|restart|health|enable|disable|rebuild|folder|run|requests}" >&2; exit 2 ;;
+  esac
+}
+
+main "$@"

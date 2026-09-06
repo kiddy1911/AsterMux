@@ -1,0 +1,62 @@
+services:
+  astermux:
+    build: .
+    image: astermux:latest
+    container_name: astermux
+    restart: unless-stopped
+    init: true
+    ports:
+      # ASTERMUX_BIND_ADDR defaults to 127.0.0.1 (localhost only). Set ASTERMUX_BIND_ADDR=0.0.0.0
+      # in .env to expose on all host interfaces (LAN/Tailscale/public), or
+      # set it to a specific IP (e.g. 100.x.x.x for Tailscale only).
+      - "${ASTERMUX_BIND_ADDR:-127.0.0.1}:${ASTERMUX_PUBLISH_PORT:-8765}:8765"
+    environment:
+      # Cursor CLI auth — required. Get it from https://cursor.com/dashboard/integrations
+      CURSOR_API_KEY: ${CURSOR_API_KEY:?Set CURSOR_API_KEY in .env (copy .env.example to .env)}
+      # Bind 0.0.0.0 so the port mapping works
+      ASTERMUX_HOST: "0.0.0.0"
+      ASTERMUX_PORT: "8765"
+      # Optional pass-throughs (set in .env to use)
+      ASTERMUX_API_KEY: ${ASTERMUX_API_KEY:-}
+      ASTERMUX_DEFAULT_MODEL: ${ASTERMUX_DEFAULT_MODEL:-auto}
+      ASTERMUX_TIMEOUT_MS: ${ASTERMUX_TIMEOUT_MS:-300000}
+      ASTERMUX_TOOL_SESSION_MODE: ${ASTERMUX_TOOL_SESSION_MODE:-stateless}
+      ASTERMUX_TOOL_SESSION_TTL_MS: ${ASTERMUX_TOOL_SESSION_TTL_MS:-60000}
+      ASTERMUX_TOOL_SESSION_MAX_PER_OWNER: ${ASTERMUX_TOOL_SESSION_MAX_PER_OWNER:-4}
+      ASTERMUX_TOOL_SESSION_MAX_GLOBAL: ${ASTERMUX_TOOL_SESSION_MAX_GLOBAL:-16}
+      ASTERMUX_STATELESS_TOOL_NAMES: ${ASTERMUX_STATELESS_TOOL_NAMES:-}
+      ASTERMUX_STATELESS_REPAIR_RETRIES: ${ASTERMUX_STATELESS_REPAIR_RETRIES:-1}
+      ASTERMUX_BATCH_ENABLED: ${ASTERMUX_BATCH_ENABLED:-false}
+      ASTERMUX_BATCH_DIR: ${ASTERMUX_BATCH_DIR:-/app/data/batches}
+      ASTERMUX_BATCH_CONCURRENCY: ${ASTERMUX_BATCH_CONCURRENCY:-8}
+      ASTERMUX_BATCH_MAX_REQUESTS: ${ASTERMUX_BATCH_MAX_REQUESTS:-1000}
+      ASTERMUX_BATCH_MAX_JOBS: ${ASTERMUX_BATCH_MAX_JOBS:-100}
+      ASTERMUX_BATCH_RETENTION_MS: ${ASTERMUX_BATCH_RETENTION_MS:-259200000}
+      ASTERMUX_VERBOSE: ${ASTERMUX_VERBOSE:-false}
+      # ACP reduces per-request CLI overhead. Persistent workers are
+      # model-agnostic and select the requested model per session. Optional
+      # warm floors let low-memory hosts keep fewer workers idle and scale up.
+      ASTERMUX_USE_ACP: ${ASTERMUX_USE_ACP:-false}
+      ASTERMUX_ACP_POOL_SIZE: ${ASTERMUX_ACP_POOL_SIZE:-0}
+      ASTERMUX_ACP_BATCH_POOL_SIZE: ${ASTERMUX_ACP_BATCH_POOL_SIZE:-8}
+      ASTERMUX_ACP_INTERACTIVE_WARM_SIZE: ${ASTERMUX_ACP_INTERACTIVE_WARM_SIZE:--1}
+      ASTERMUX_ACP_BATCH_WARM_SIZE: ${ASTERMUX_ACP_BATCH_WARM_SIZE:--1}
+      ASTERMUX_ACP_ELASTIC_IDLE_MS: ${ASTERMUX_ACP_ELASTIC_IDLE_MS:-120000}
+      ASTERMUX_ACP_INTERACTIVE_QUEUE_MAX: ${ASTERMUX_ACP_INTERACTIVE_QUEUE_MAX:-4}
+      ASTERMUX_ACP_BATCH_QUEUE_MAX: ${ASTERMUX_ACP_BATCH_QUEUE_MAX:-24}
+      ASTERMUX_ACP_INTERACTIVE_QUEUE_TIMEOUT_MS: ${ASTERMUX_ACP_INTERACTIVE_QUEUE_TIMEOUT_MS:-15000}
+      ASTERMUX_ACP_BATCH_QUEUE_TIMEOUT_MS: ${ASTERMUX_ACP_BATCH_QUEUE_TIMEOUT_MS:-70000}
+      ASTERMUX_ACP_TOOL_POOL_SIZE: ${ASTERMUX_ACP_TOOL_POOL_SIZE:-0}
+      ASTERMUX_ACP_TOOL_WARM_SIZE: ${ASTERMUX_ACP_TOOL_WARM_SIZE:--1}
+      ASTERMUX_ACP_TOOL_QUEUE_MAX: ${ASTERMUX_ACP_TOOL_QUEUE_MAX:-8}
+      ASTERMUX_ACP_TOOL_QUEUE_TIMEOUT_MS: ${ASTERMUX_ACP_TOOL_QUEUE_TIMEOUT_MS:-120000}
+      ASTERMUX_ACP_POOL_MAX_REQUESTS: ${ASTERMUX_ACP_POOL_MAX_REQUESTS:-100}
+      ASTERMUX_ACP_POOL_MAX_AGE_MS: ${ASTERMUX_ACP_POOL_MAX_AGE_MS:-3600000}
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8765/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3

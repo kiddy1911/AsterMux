@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AsterMux</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="dot" id="status-dot"></span>
+      <span>AsterMux</span>
+      <span class="muted-text mono" id="status-summary" style="font-weight: 400; font-size: 12px;">…</span>
+    </div>
+    <nav>
+      <a href="/" class="active">Dashboard</a>
+      <a href="/docs">Docs</a>
+      <a href="/healthz" target="_blank">/healthz</a>
+      <a href="/health" target="_blank">/health</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="grid cols-2" style="margin-bottom: 16px;">
+      <section class="card">
+        <div class="card-head">
+          <span>Status</span>
+          <div class="actions">
+            <button class="btn small" id="refresh-btn">Refresh</button>
+          </div>
+        </div>
+        <div class="card-body" id="status-body">
+          <div class="empty">Loading…</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <span>Gateway configuration</span>
+        </div>
+        <div class="card-body" id="config-body">
+          <div class="empty">Loading…</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-bottom: 16px;">
+      <div class="card-head">
+        <span>Actions</span>
+        <span class="muted-text" style="font-size: 11px; text-transform: none; letter-spacing: 0;">runs <span class="mono">astermux &lt;cmd&gt;</span> in background</span>
+      </div>
+      <div class="card-body" style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn primary" data-action="restart">Restart gateway</button>
+        <button class="btn danger" data-action="stop">Stop gateway</button>
+        <button class="btn" data-action="enable">Enable autostart</button>
+        <button class="btn" data-action="disable">Disable autostart</button>
+      </div>
+    </section>
+
+    <div class="grid cols-2" style="margin-bottom: 16px;">
+      <section class="card">
+        <div class="card-head">
+          <span>Request stats (sessions log)</span>
+          <span class="muted-text mono" id="stats-total" style="font-size: 12px; text-transform: none; letter-spacing: 0;"></span>
+        </div>
+        <div class="card-body" id="stats-body">
+          <div class="empty">Loading…</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <span>Recent requests</span>
+        </div>
+        <div class="card-body" id="recent-body" style="padding: 0;">
+          <div class="empty">Loading…</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="card-head">
+        <span>Live log tail</span>
+        <div class="actions">
+          <label class="interval-control">
+            <span class="muted-text">interval</span>
+            <input type="number" id="log-interval-input" class="interval-input" min="0.5" step="0.5" value="3" />
+            <span class="muted-text">s</span>
+          </label>
+          <label class="muted-text" style="font-size: 12px;">
+            <input type="checkbox" id="autoscroll" checked /> autoscroll
+          </label>
+          <button class="btn small" id="pause-btn">Pause</button>
+          <button class="btn small danger" id="clear-btn">Clear</button>
+        </div>
+      </div>
+      <div class="log-viewer" id="log-viewer">
+        <div class="empty">Loading…</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast-stack" id="toasts"></div>
+
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

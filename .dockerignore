@@ -1,0 +1,16 @@
+.git
+.gitignore
+.claude
+.cursor
+.env
+*.log
+logs/
+sessions.log
+node_modules
+dist
+examples
+vitest.config.ts
+**/*.test.ts
+*.ts.net.crt
+*.ts.net.key
+apps/macos-menu

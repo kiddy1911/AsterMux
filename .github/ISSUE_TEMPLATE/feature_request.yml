@@ -1,0 +1,20 @@
+name: Feature request
+description: Propose an AsterMux capability or compatibility improvement
+title: "[feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility considerations
+      description: Mention OpenAI, Responses, Anthropic, ACP, MCP, model, or host constraints when relevant.

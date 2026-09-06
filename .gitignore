@@ -1,0 +1,24 @@
+node_modules/
+dist/
+# Cursor / Claude local IDE settings
+.claude/
+*.log
+.env
+.DS_Store
+# Tailscale / TLS certs (keep private keys out of repo)
+*.ts.net.crt
+*.ts.net.key
+# Session/request log (optional; path configurable via ASTERMUX_SESSIONS_LOG)
+sessions.log
+logs/
+# Local Cursor rules (no-pii etc.) — keep out of public fork
+.cursor/
+# SwiftPM build artifacts (widget)
+apps/macos-menu/.build/
+
+# Persistent runtime batch state
+data/batches/
+
+# Local migration archives may contain .env and Docker images.
+/*-migration.tar.gz
+/*-migration.tar.gz.sha256
