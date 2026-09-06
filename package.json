@@ -12,7 +12,6 @@
     "scripts/astermux",
     "package.json",
     "LICENSE",
-    "THIRD_PARTY_NOTICES.md",
     "SECURITY.md"
   ],
   "main": "./dist/sdk/client.js",
@@ -52,7 +51,7 @@
     "tool-calling",
     "batch"
   ],
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0",
