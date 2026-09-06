@@ -1,0 +1,31 @@
+name: Sync lockfile once
+
+on:
+  push:
+    branches: [chore/project-hardening]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: chore/project-hardening
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - name: Regenerate package lock metadata
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Commit generated lockfile and remove this one-time workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/sync-lock-once.yml
+          git add package-lock.json
+          git commit -m 'chore: sync v0.1.2 package lock metadata'
+          git push origin HEAD:chore/project-hardening
