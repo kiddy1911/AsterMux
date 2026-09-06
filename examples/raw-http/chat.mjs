@@ -9,7 +9,7 @@
  * Run: node examples/raw-http/chat.mjs
  */
 
-const BASE_URL = process.env.ASTERMUX_URL || "http://127.0.0.1:8765";
+const BASE_URL = process.env.ASTERMUX_URL || "http://127.0.0.1:8787";
 
 async function main() {
   console.log("Requesting", `${BASE_URL}/v1/chat/completions`);

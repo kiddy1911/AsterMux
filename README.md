@@ -9,7 +9,7 @@ hosts: the same execution ceilings can run fully warm for minimum latency or
 shrink to configurable warm floors to reduce idle memory.
 
 AsterMux is an independent community project. Cursor is an upstream runtime, not
-the product identity. See [Third-party notices](THIRD_PARTY_NOTICES.md).
+the product identity.
 
 ## What makes AsterMux different
 
@@ -85,7 +85,7 @@ cp .env.example .env
 # Set CURSOR_API_KEY in .env
 
 docker compose up --build -d
-curl http://127.0.0.1:8765/healthz
+curl http://127.0.0.1:8787/healthz
 ```
 
 Compose binds to loopback by default. Change `ASTERMUX_BIND_ADDR` only when you
@@ -106,12 +106,12 @@ npm install astermux
 npx astermux
 ```
 
-Default endpoint: `http://127.0.0.1:8765`.
+Default endpoint: `http://127.0.0.1:8787`.
 
 ## First request
 
 ```bash
-curl http://127.0.0.1:8765/v1/chat/completions \
+curl http://127.0.0.1:8787/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer YOUR_ASTERMUX_KEY' \
   -d '{
@@ -330,9 +330,3 @@ examples/               SDK, raw HTTP, streaming, and latency examples
 scripts/astermux        Local launcher / macOS service helper
 apps/macos-menu/        Optional macOS menu-bar controller
 ```
-
-## License
-
-AsterMux is distributed under the MIT License. See [LICENSE](LICENSE).
-Inherited third-party provenance is documented separately in
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

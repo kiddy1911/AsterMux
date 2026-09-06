@@ -8,7 +8,7 @@ this document configure the external Cursor runtime rather than AsterMux itself.
 | Variable | Default | Purpose |
 |---|---:|---|
 | `ASTERMUX_HOST` | `127.0.0.1` | Process bind address. |
-| `ASTERMUX_PORT` | `8765` | Process listen port. |
+| `ASTERMUX_PORT` | `8787` | Process listen port. |
 | `ASTERMUX_API_KEY` | unset | Require `Authorization: Bearer ...` on LLM API routes. |
 | `ASTERMUX_TLS_CERT` | unset | TLS certificate path. Use together with `ASTERMUX_TLS_KEY`. |
 | `ASTERMUX_TLS_KEY` | unset | TLS private-key path. |
@@ -20,7 +20,7 @@ Docker Compose additionally accepts:
 | Variable | Default | Purpose |
 |---|---:|---|
 | `ASTERMUX_BIND_ADDR` | `127.0.0.1` | Host-side address used by Docker port publishing. |
-| `ASTERMUX_PUBLISH_PORT` | `8765` | Host-side published port. |
+| `ASTERMUX_PUBLISH_PORT` | `8787` | Host-side published port. |
 
 ## Cursor runtime
 
@@ -139,7 +139,7 @@ These are optional integration hooks and are not needed for normal use:
 
 | Variable | Default | Purpose |
 |---|---:|---|
-| `ASTERMUX_URL` | `http://127.0.0.1:8765` | Base URL used by the JavaScript SDK helpers. |
+| `ASTERMUX_URL` | `http://127.0.0.1:8787` | Base URL used by the JavaScript SDK helpers. |
 
 The launcher also understands `ASTERMUX_ROOT` and `ASTERMUX_NODE`; the optional
 macOS menu app uses `ASTERMUX_WIDGET_CLI` and `ASTERMUX_WIDGET_INTERVAL`.

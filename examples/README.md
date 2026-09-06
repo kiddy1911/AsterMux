@@ -47,7 +47,7 @@ node examples/raw-http/streaming.mjs
 ```
 
 Set `ASTERMUX_URL` when the gateway is not on the default
-`http://127.0.0.1:8765` address.
+`http://127.0.0.1:8787` address.
 
 ## Benchmark harness
 

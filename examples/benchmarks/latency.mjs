@@ -10,7 +10,7 @@
  *   node examples/benchmarks/latency.mjs
  *
  * Env:
- *   ASTERMUX_URL       existing gateway (default http://127.0.0.1:8765)
+ *   ASTERMUX_URL       existing gateway (default http://127.0.0.1:8787)
  *   BENCH_SKIP_EPHEMERAL=1 skip spawned ACP/tool proxies
  *   BENCH_COMPARE_AGENT=1  also run agent-mode completion (slower path)
  *   BENCH_MAX_MODE=1       enable ASTERMUX_MAX_MODE on ephemeral proxies
@@ -28,7 +28,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..
 const CLI_PATH = path.join(REPO_ROOT, "dist/entry/cli.js");
 
 const DEFAULT_GATEWAY_URL =
-  process.env.ASTERMUX_URL ?? "http://127.0.0.1:8765";
+  process.env.ASTERMUX_URL ?? "http://127.0.0.1:8787";
 const AGENT_BIN = process.env.CURSOR_AGENT_BIN ?? "agent";
 const PROMPT = process.env.BENCH_PROMPT ?? 'Reply with exactly one word: "ok"';
 const MODEL_ENV = process.env.BENCH_MODEL ?? "auto";

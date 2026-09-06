@@ -9,7 +9,7 @@ describe("loadGatewayConfig", () => {
 
     expect(config.agentBin).toBe("agent");
     expect(config.host).toBe("127.0.0.1");
-    expect(config.port).toBe(8765);
+    expect(config.port).toBe(8787);
     expect(config.requiredKey).toBeUndefined();
     expect(config.defaultModel).toBe("default");
     expect(config.force).toBe(false);

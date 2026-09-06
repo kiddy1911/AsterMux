@@ -1,6 +1,6 @@
 {
   "name": "astermux",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Adaptive model gateway for Cursor ACP with OpenAI/Anthropic compatibility, universal model pooling, tools, batching, and elastic memory.",
   "private": false,
   "type": "module",

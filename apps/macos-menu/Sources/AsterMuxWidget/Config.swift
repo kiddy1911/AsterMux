@@ -12,7 +12,7 @@ struct Config {
     static func load() -> Config {
         let env = ProcessInfo.processInfo.environment
         let host = env["ASTERMUX_HOST"] ?? "127.0.0.1"
-        let port = Int(env["ASTERMUX_PORT"] ?? "") ?? 8765
+        let port = Int(env["ASTERMUX_PORT"] ?? "") ?? 8787
         let defaultCli = "\(NSHomeDirectory())/.local/bin/astermux"
         let cli = env["ASTERMUX_WIDGET_CLI"] ?? defaultCli
         let interval = TimeInterval(env["ASTERMUX_WIDGET_INTERVAL"] ?? "") ?? 15

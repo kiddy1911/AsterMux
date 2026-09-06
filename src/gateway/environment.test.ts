@@ -12,7 +12,7 @@ describe("loadEnvConfig", () => {
 
     expect(loaded.agentBin).toBe("agent");
     expect(loaded.host).toBe("127.0.0.1");
-    expect(loaded.port).toBe(8765);
+    expect(loaded.port).toBe(8787);
     expect(loaded.defaultModel).toBe("default");
     expect(loaded.force).toBe(false);
     expect(loaded.approveMcps).toBe(false);
@@ -225,13 +225,13 @@ describe("loadEnvConfig", () => {
     ).toBe(false);
   });
 
-  it("falls back to default port 8765 for invalid ASTERMUX_PORT", () => {
+  it("falls back to default port 8787 for invalid ASTERMUX_PORT", () => {
     expect(
       loadEnvConfig({ env: { ASTERMUX_PORT: "not-a-number" } }).port,
-    ).toBe(8765);
-    expect(loadEnvConfig({ env: { ASTERMUX_PORT: "0" } }).port).toBe(8765);
+    ).toBe(8787);
+    expect(loadEnvConfig({ env: { ASTERMUX_PORT: "0" } }).port).toBe(8787);
     expect(loadEnvConfig({ env: { ASTERMUX_PORT: "-1" } }).port).toBe(
-      8765,
+      8787,
     );
   });
 
