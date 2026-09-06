@@ -10,7 +10,7 @@ STORAGE="${HOME}/.astermux"
 LOG="${STORAGE}/gateway.log"
 PIDFILE="${STORAGE}/gateway.pid"
 
-PORT="${ASTERMUX_PORT:-8765}"
+PORT="${ASTERMUX_PORT:-8787}"
 HOST="${ASTERMUX_HOST:-127.0.0.1}"
 
 _resolve_root() {

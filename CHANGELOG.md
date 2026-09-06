@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+- Changed the default AsterMux HTTP port from `8765` to `8787` across runtime, Docker, SDK, examples, and documentation.
+- Kept legal notices out of the product-facing README while retaining required distribution files.
+
 ## 0.1.0
 
 Initial AsterMux public release.

@@ -31,13 +31,13 @@ RUN curl -fsSL https://cursor.com/install | bash
 ENV PATH=/home/app/.local/bin:$PATH \
     NODE_ENV=production \
     ASTERMUX_HOST=0.0.0.0 \
-    ASTERMUX_PORT=8765
+    ASTERMUX_PORT=8787
 
 WORKDIR /app
-EXPOSE 8765
+EXPOSE 8787
 
 # /healthz bypasses ASTERMUX_API_KEY — safer for container probes
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -fsS http://127.0.0.1:8765/healthz || exit 1
+    CMD curl -fsS http://127.0.0.1:8787/healthz || exit 1
 
 ENTRYPOINT ["node", "/app/dist/entry/cli.js"]

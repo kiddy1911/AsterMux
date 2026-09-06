@@ -10,7 +10,7 @@ function config(overrides: Partial<GatewayConfig> = {}): GatewayConfig {
     acpArgs: ["acp"],
     acpEnv: {},
     host: "127.0.0.1",
-    port: 8765,
+    port: 8787,
     defaultModel: "auto",
     mode: "ask",
     force: false,

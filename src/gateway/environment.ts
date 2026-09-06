@@ -388,8 +388,8 @@ export function loadEnvConfig(opts: EnvOptions = {}): LoadedEnv {
   const host =
     envString(env, ["ASTERMUX_HOST"]) ??
     (opts.tailscale ? "0.0.0.0" : "127.0.0.1");
-  const portValue = envNumber(env, ["ASTERMUX_PORT"], 8765);
-  const port = Number.isFinite(portValue) && portValue > 0 ? portValue : 8765;
+  const portValue = envNumber(env, ["ASTERMUX_PORT"], 8787);
+  const port = Number.isFinite(portValue) && portValue > 0 ? portValue : 8787;
 
   const home = envString(env, ["HOME", "USERPROFILE"]);
 

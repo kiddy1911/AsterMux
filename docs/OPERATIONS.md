@@ -9,12 +9,12 @@ With AsterMux running on the default address:
 
 | URL | Purpose |
 |---|---|
-| `http://127.0.0.1:8765/` | Runtime dashboard |
-| `http://127.0.0.1:8765/docs` | Rendered operations guide |
-| `http://127.0.0.1:8765/healthz` | Minimal health probe |
-| `http://127.0.0.1:8765/health` | JSON health/config summary |
-| `http://127.0.0.1:8765/v1/runtime/status` | Scheduler and pool state |
-| `http://127.0.0.1:8765/metrics` | Prometheus metrics |
+| `http://127.0.0.1:8787/` | Runtime dashboard |
+| `http://127.0.0.1:8787/docs` | Rendered operations guide |
+| `http://127.0.0.1:8787/healthz` | Minimal health probe |
+| `http://127.0.0.1:8787/health` | JSON health/config summary |
+| `http://127.0.0.1:8787/v1/runtime/status` | Scheduler and pool state |
+| `http://127.0.0.1:8787/metrics` | Prometheus metrics |
 
 The dashboard should remain on loopback unless you deliberately place it behind
 an authenticated/trusted network boundary.

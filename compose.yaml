@@ -9,13 +9,13 @@ services:
       # ASTERMUX_BIND_ADDR defaults to 127.0.0.1 (localhost only). Set ASTERMUX_BIND_ADDR=0.0.0.0
       # in .env to expose on all host interfaces (LAN/Tailscale/public), or
       # set it to a specific IP (e.g. 100.x.x.x for Tailscale only).
-      - "${ASTERMUX_BIND_ADDR:-127.0.0.1}:${ASTERMUX_PUBLISH_PORT:-8765}:8765"
+      - "${ASTERMUX_BIND_ADDR:-127.0.0.1}:${ASTERMUX_PUBLISH_PORT:-8787}:8787"
     environment:
       # Cursor CLI auth — required. Get it from https://cursor.com/dashboard/integrations
       CURSOR_API_KEY: ${CURSOR_API_KEY:?Set CURSOR_API_KEY in .env (copy .env.example to .env)}
       # Bind 0.0.0.0 so the port mapping works
       ASTERMUX_HOST: "0.0.0.0"
-      ASTERMUX_PORT: "8765"
+      ASTERMUX_PORT: "8787"
       # Optional pass-throughs (set in .env to use)
       ASTERMUX_API_KEY: ${ASTERMUX_API_KEY:-}
       ASTERMUX_DEFAULT_MODEL: ${ASTERMUX_DEFAULT_MODEL:-auto}
@@ -55,7 +55,7 @@ services:
     volumes:
       - ./data:/app/data
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8765/healthz || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8787/healthz || exit 1"]
       interval: 30s
       timeout: 5s
       start_period: 10s

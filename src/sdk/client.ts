@@ -6,7 +6,7 @@
  * must be installed and set up separately (see README).
  */
 
-const DEFAULT_BASE_URL = "http://127.0.0.1:8765";
+const DEFAULT_BASE_URL = "http://127.0.0.1:8787";
 const HEALTH_PATH = "/health";
 const GATEWAY_START_TIMEOUT_MS = 15_000;
 const GATEWAY_POLL_MS = 200;
@@ -14,7 +14,7 @@ const GATEWAY_STOP_TIMEOUT_MS = 5_000;
 const SHUTDOWN_SIGNALS = ["SIGINT", "SIGTERM", "SIGHUP", "SIGBREAK"] as const;
 
 export type AsterMuxClientOptions = {
-  /** Gateway base URL (e.g. http://127.0.0.1:8765). Default: env ASTERMUX_URL or http://127.0.0.1:8765 */
+  /** Gateway base URL (e.g. http://127.0.0.1:8787). Default: env ASTERMUX_URL or http://127.0.0.1:8787 */
   baseUrl?: string;
   /** Optional API key; if the proxy is started with ASTERMUX_API_KEY, pass it here. */
   apiKey?: string;
@@ -171,7 +171,7 @@ function installShutdownHandlers(): void {
 
 function isDefaultBaseUrl(baseUrl: string): boolean {
   const u = baseUrl.replace(/\/$/, "");
-  return u === DEFAULT_BASE_URL || u === "http://127.0.0.1:8765" || u === "http://localhost:8765";
+  return u === DEFAULT_BASE_URL || u === "http://127.0.0.1:8787" || u === "http://localhost:8787";
 }
 
 async function pingHealth(baseUrl: string): Promise<boolean> {
