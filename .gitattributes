@@ -1,0 +1,14 @@
+* text=auto
+
+*.sh text eol=lf
+*.ts text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+
+# Keep GitHub language statistics focused on project-owned source.
+ui/vendor/** linguist-vendored
+package-lock.json linguist-generated=true

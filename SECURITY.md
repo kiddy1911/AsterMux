@@ -6,10 +6,11 @@ Security fixes are applied to the latest published AsterMux release.
 
 ## Reporting a vulnerability
 
-When the public repository is created, use GitHub's private security-advisory
-workflow for vulnerability reports. Do not open a public issue containing API
-keys, authentication tokens, request bodies, account directories, or private
-workspace paths.
+Use GitHub's private security-advisory workflow for vulnerability reports:
+https://github.com/kiddy1911/AsterMux/security/advisories/new
+
+Do not open a public issue containing API keys, authentication tokens, request
+bodies, account directories, or private workspace paths.
 
 ## Deployment boundary
 

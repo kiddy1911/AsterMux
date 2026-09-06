@@ -1,5 +1,13 @@
 # AsterMux
 
+[![CI](https://github.com/kiddy1911/AsterMux/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kiddy1911/AsterMux/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/kiddy1911/AsterMux/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/kiddy1911/AsterMux/actions/workflows/codeql.yml)
+[![Release](https://img.shields.io/github/v/release/kiddy1911/AsterMux?sort=semver)](https://github.com/kiddy1911/AsterMux/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE)
+[![Language: TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js >=22.12](https://img.shields.io/badge/Node.js-%3E%3D22.12-339933?logo=node.js&logoColor=white)](package.json)
+[![Container: GHCR](https://img.shields.io/badge/container-GHCR-2496ED?logo=docker&logoColor=white)](https://github.com/kiddy1911/AsterMux/pkgs/container/astermux)
+
 **Adaptive, model-agnostic gateway for Cursor ACP.**
 
 AsterMux exposes Cursor-backed models through familiar OpenAI and Anthropic HTTP
@@ -63,7 +71,7 @@ execution lifecycle.
 
 ## Requirements
 
-- Node.js 18+ when running from source.
+- Node.js 22.12+ when running from source.
 - Cursor Agent CLI installed and authenticated, or a `CURSOR_API_KEY` for
   headless use.
 - For external client tools, a Cursor ACP build that exposes the required MCP
@@ -113,7 +121,7 @@ docker run -d \
 ```
 
 For production, pin a release tag such as
-`ghcr.io/kiddy1911/astermux:v0.1.1` instead of `latest`.
+`ghcr.io/kiddy1911/astermux:v0.1.2` instead of `latest`.
 
 ### 2. Docker Compose — recommended for repository deployments
 
@@ -388,3 +396,14 @@ examples/               SDK, raw HTTP, streaming, and latency examples
 scripts/astermux        Local launcher / macOS service helper
 apps/macos-menu/        Optional macOS menu-bar controller
 ```
+
+## Community and support
+
+- [Contributing](CONTRIBUTING.md) — development workflow and pull-request expectations.
+- [Support](SUPPORT.md) — where to ask setup and usage questions.
+- [Security](SECURITY.md) — private vulnerability reporting and deployment boundaries.
+- [Code of Conduct](CODE_OF_CONDUCT.md) — community participation standards.
+
+## License
+
+AsterMux is open source under the [MIT License](LICENSE).

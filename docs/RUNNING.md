@@ -54,7 +54,7 @@ docker run -d \
   --restart unless-stopped \
   --env-file .env \
   -p 127.0.0.1:8787:8787 \
-  ghcr.io/kiddy1911/astermux:v0.1.1
+  ghcr.io/kiddy1911/astermux:v0.1.2
 ```
 
 ### Verify
@@ -153,7 +153,7 @@ want to manage Cursor Agent yourself.
 
 ### Requirements
 
-- Node.js 18+
+- Node.js 22.12+
 - Cursor Agent installed
 - Cursor Agent authenticated locally, or `CURSOR_API_KEY` exported
 
