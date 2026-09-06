@@ -1,8 +1,0 @@
-name: Security report
-description: Do not use this form for vulnerabilities
-title: "[security] use private advisory instead"
-body:
-  - type: markdown
-    attributes:
-      value: |
-        **Do not post vulnerability details here.** Close this form and use the private security advisory link in SECURITY.md: https://github.com/kiddy1911/AsterMux/security/advisories/new
