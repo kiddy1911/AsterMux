@@ -1,5 +1,7 @@
 # AsterMux
 
+**Languages:** **English** · [简体中文](README.zh-CN.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Português (Brasil)](README.pt-BR.md) · [Русский](README.ru.md) · [Tiếng Việt](README.vi.md)
+
 [![CI](https://github.com/kiddy1911/AsterMux/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kiddy1911/AsterMux/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/kiddy1911/AsterMux/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/kiddy1911/AsterMux/actions/workflows/codeql.yml)
 [![Release](https://img.shields.io/github/v/release/kiddy1911/AsterMux?sort=semver)](https://github.com/kiddy1911/AsterMux/releases)
