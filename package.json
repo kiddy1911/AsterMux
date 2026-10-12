@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "chrome-launcher": "^1.2.1"
+    "chrome-launcher": "^1.2.2"
   },
   "author": "AsterMux contributors",
   "repository": {
